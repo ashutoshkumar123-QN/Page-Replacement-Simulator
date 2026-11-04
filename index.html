@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Page Replacement Algorithm Simulator</title>
+  <meta name="description" content="Interactive simulator that visualizes and compares FIFO, LRU and Optimal page replacement algorithms.">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="site-header">
+    <h1>Page Replacement Algorithm Simulator</h1>
+    <p>Visualize and compare <strong>FIFO</strong>, <strong>LRU</strong> and <strong>Optimal</strong> page replacement step by step.</p>
+  </header>
+
+  <main>
+    <!-- ============ MODULE 2: INPUT PANEL ============ -->
+    <section class="card" aria-labelledby="input-title">
+      <h2 id="input-title">1. Enter your input</h2>
+      <form id="sim-form" novalidate>
+        <div class="field-grid">
+          <label class="field field-wide">
+            <span>Reference string <small>(page numbers separated by spaces or commas)</small></span>
+            <input id="refs" type="text" value="7 0 1 2 0 3 0 4 2 3 0 3 2 1 2 0 1 7 0 1" autocomplete="off" spellcheck="false">
+          </label>
+          <label class="field">
+            <span>Number of frames <small>(1 to 10)</small></span>
+            <input id="frames" type="number" min="1" max="10" value="3">
+          </label>
+          <label class="field">
+            <span>Algorithm</span>
+            <select id="algo">
+              <option value="ALL">Compare all</option>
+              <option value="FIFO">FIFO</option>
+              <option value="LRU">LRU</option>
+              <option value="Optimal">Optimal</option>
+            </select>
+          </label>
+        </div>
+        <div class="button-row">
+          <button type="submit" class="btn btn-primary">Run simulation</button>
+          <button type="button" id="btn-random" class="btn">Random string</button>
+          <button type="button" id="btn-example" class="btn">Textbook example</button>
+          <button type="button" id="btn-belady" class="btn">Belady's anomaly demo</button>
+        </div>
+        <p id="error" class="error" role="alert" hidden></p>
+      </form>
+    </section>
+
+    <!-- ============ RESULTS ============ -->
+    <section id="results" class="card" aria-labelledby="results-title" hidden>
+      <h2 id="results-title">2. Step-by-step simulation</h2>
+
+      <div id="tabs" class="tabs" role="tablist" aria-label="Algorithm" hidden></div>
+
+      <div id="stats" class="stats" aria-live="polite"></div>
+
+      <div class="controls" role="group" aria-label="Simulation controls">
+        <button type="button" id="btn-reset" class="btn" title="Back to the start">&#8634; Reset</button>
+        <button type="button" id="btn-prev" class="btn" title="Previous step">&#9664; Previous</button>
+        <button type="button" id="btn-play" class="btn btn-primary" title="Play or pause">&#9654; Play</button>
+        <button type="button" id="btn-next" class="btn" title="Next step">Next &#9654;</button>
+        <button type="button" id="btn-end" class="btn" title="Jump to the end">End &#9654;&#9654;</button>
+        <label class="speed">Speed
+          <select id="speed">
+            <option value="1200">Slow</option>
+            <option value="700" selected>Normal</option>
+            <option value="250">Fast</option>
+          </select>
+        </label>
+        <span id="step-counter" class="step-counter"></span>
+      </div>
+
+      <p id="explanation" class="explanation" aria-live="polite"></p>
+
+      <div id="trace-wrap" class="trace-wrap" tabindex="0" aria-label="Simulation table (scrollable)"></div>
+
+      <ul class="legend" aria-label="Legend">
+        <li><span class="swatch swatch-hit"></span> Hit: page already in memory</li>
+        <li><span class="swatch swatch-fault"></span> Fault: page loaded from disk</li>
+        <li><span class="swatch swatch-changed"></span> Frame that was written in this step</li>
+      </ul>
+    </section>
+
+    <section id="compare" class="card" aria-labelledby="compare-title" hidden>
+      <h2 id="compare-title">3. Performance comparison</h2>
+      <p id="best" class="best-banner"></p>
+      <div id="compare-table-wrap" class="table-scroll"></div>
+      <h3>Page fault ratio (lower is better)</h3>
+      <div id="chart" class="chart" role="img" aria-label="Bar chart of page fault ratio per algorithm"></div>
+    </section>
+
+    <section id="note" class="card note" hidden></section>
+
+    <section class="card" aria-labelledby="about-title">
+      <h2 id="about-title">How the algorithms decide</h2>
+      <dl class="about">
+        <dt>FIFO (First-In First-Out)</dt>
+        <dd>Evicts the page that has been in memory the longest. Simple, but can evict a page that is still heavily used.</dd>
+        <dt>LRU (Least Recently Used)</dt>
+        <dd>Evicts the page that has gone unused for the longest time, assuming recent use predicts near-future use.</dd>
+        <dt>Optimal (Belady's MIN)</dt>
+        <dd>Evicts the page whose next use is farthest in the future. It needs knowledge of the future, so it is a theoretical benchmark that no real system can implement, and it gives the minimum possible number of faults.</dd>
+      </dl>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    Operating Systems mini project &middot; Module 1: simulation engine (<code>engine.js</code>) &middot; Module 2: interface (<code>app.js</code>)
+  </footer>
+
+  <script src="engine.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
