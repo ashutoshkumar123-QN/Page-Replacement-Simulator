@@ -204,23 +204,34 @@
   // a theoretical benchmark rather than a practical algorithm.
   // Ties (several pages never used again) are broken by lowest frame
   // number so results are deterministic.
-  // Time: O(n * f * n) worst case   Space: O(f)
+  //
+  // Speed-up: the position of the next request for every page is computed
+  // once, in one backward pass. Each eviction then only compares the f
+  // stored values instead of scanning the rest of the reference string.
+  // Time: O(n * f)   Space: O(n + f)
   // ------------------------------------------------------------------
   function optimal(referenceString, frameCount) {
     validateInput(referenceString, frameCount);
     var frames = emptyFrames(frameCount);
     var steps = [];
+    var total = referenceString.length;
 
-    function nextUse(page, from) {
-      for (var j = from; j < referenceString.length; j++) {
-        if (referenceString[j] === page) return j;
-      }
-      return Infinity;
+    // nextOccurrence[i] = index of the next request for the same page after
+    // request i, or Infinity when that page is never requested again.
+    var nextOccurrence = new Array(total);
+    var seenAt = {};
+    for (var k = total - 1; k >= 0; k--) {
+      var p = referenceString[k];
+      nextOccurrence[k] = Object.prototype.hasOwnProperty.call(seenAt, p) ? seenAt[p] : Infinity;
+      seenAt[p] = k;
     }
+    // frameNextUse[slot] = when the page held in that slot is needed next
+    var frameNextUse = emptyFrames(frameCount);
 
     referenceString.forEach(function (page, i) {
       var existing = frames.indexOf(page);
       if (existing !== -1) {
+        frameNextUse[existing] = nextOccurrence[i];
         steps.push(makeStep(i, page, frames, 'Hit', null, -1,
           'Page ' + page + ' is already in frame ' + (existing + 1) + ', so no replacement is needed.'));
         return;
@@ -228,6 +239,7 @@
       var emptySlot = frames.indexOf(null);
       if (emptySlot !== -1) {
         frames[emptySlot] = page;
+        frameNextUse[emptySlot] = nextOccurrence[i];
         steps.push(makeStep(i, page, frames, 'Fault', null, emptySlot,
           'Page fault. A free frame was available, so page ' + page + ' was loaded into frame ' + (emptySlot + 1) + '.'));
         return;
@@ -235,14 +247,14 @@
       var slot = 0;
       var farthest = -1;
       for (var s = 0; s < frameCount; s++) {
-        var n = nextUse(frames[s], i + 1);
-        if (n > farthest) {
-          farthest = n;
+        if (frameNextUse[s] > farthest) {
+          farthest = frameNextUse[s];
           slot = s;
         }
       }
       var evicted = frames[slot];
       frames[slot] = page;
+      frameNextUse[slot] = nextOccurrence[i];
       var why = farthest === Infinity
         ? 'is never used again'
         : 'is not needed until request ' + (farthest + 1) + ' (the farthest in the future)';
@@ -274,6 +286,9 @@
 
   /** Returns the names of the algorithm(s) with the fewest page faults. */
   function bestAlgorithms(results) {
+    if (!Array.isArray(results) || results.length === 0) {
+      throw new Error('Results cannot be empty.');
+    }
     var min = Math.min.apply(null, results.map(function (r) { return r.totalFaults; }));
     return results.filter(function (r) { return r.totalFaults === min; })
       .map(function (r) { return r.algorithm; });
