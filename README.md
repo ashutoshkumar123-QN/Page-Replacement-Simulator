@@ -95,7 +95,7 @@ Every algorithm returns this structure:
 - Per-step explanation text (educational mode).
 - Comparison table, fault-ratio bar chart and a "best algorithm" banner.
 - Extras: random reference string generator, textbook example button, Belady's anomaly demo.
-- Responsive layout, keyboard-focusable controls, light and dark mode.
+- Responsive layout, keyboard-focusable controls, light and dark mode, and a reduced-motion mode (no bar animation or smooth scrolling when the system asks for less motion).
 
 ## 5. Technology choices
 

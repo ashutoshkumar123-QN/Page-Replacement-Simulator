@@ -16,6 +16,9 @@
   // step: number of requests already processed (0..total), timer: play interval
   var state = { results: [], active: 0, step: 0, timer: null };
 
+  // CSS cannot override an explicit smooth scroll requested from JavaScript, so check the preference here too
+  var reduceMotion = !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
+
   // ------------------------------------------------------------------
   // Small DOM helpers (text is always set with textContent, never innerHTML)
   // ------------------------------------------------------------------
@@ -59,7 +62,7 @@
     $('results').hidden = false;
     renderNote(note);
     renderAll();
-    $('results').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    $('results').scrollIntoView({ behavior: reduceMotion ? 'auto' : 'smooth', block: 'start' });
   }
 
   // ------------------------------------------------------------------
@@ -126,7 +129,8 @@
     $('btn-prev').disabled = state.step === 0;
     $('btn-next').disabled = state.step >= n;
     $('btn-end').disabled = state.step >= n;
-    $('btn-play').innerHTML = state.timer ? '&#10074;&#10074; Pause' : '&#9654; Play';
+    // Same symbols as the HTML entities used elsewhere (&#10074; and &#9654;), set as plain text
+    $('btn-play').textContent = state.timer ? '\u275A\u275A Pause' : '\u25B6 Play';
     $('step-counter').textContent = 'Step ' + state.step + ' of ' + n;
   }
 
