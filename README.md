@@ -141,7 +141,7 @@ Verified results for the standard textbook string `7 0 1 2 0 3 0 4 2 3 0 3 2 1 2
 
 ## 8. Testing
 
-`tests.js` contains 36 checks:
+`tests.js` contains 55 checks:
 - Textbook fault counts for all three algorithms
 - Exact frame contents and evicted page at each step on a small example
 - Result contract and ratio calculations
@@ -152,35 +152,4 @@ Verified results for the standard textbook string `7 0 1 2 0 3 0 4 2 3 0 3 2 1 2
 
 Manual UI checklist: run the textbook example; step with Next and Previous; press Play; switch tabs; enter `1 x 3` and confirm an error appears; click each of the extra buttons.
 
-## 9. Team task split
 
-**Person 1: Simulation Engine**
-- [x] Study FIFO, LRU, Optimal
-- [x] Implement the three algorithms with a common signature
-- [x] Record frame state and hit/fault status at each step
-- [x] Calculate hits, faults and ratios
-- [x] Input parsing and validation
-- [x] Write and run the test suite
-
-**Person 2: UI & Visualization**
-- [x] Layout and input form with validation messages
-- [x] Step table with hit/fault colouring
-- [x] Step controls, play/pause and speed
-- [x] Statistic cards
-- [x] Comparison table, bar chart and best-algorithm banner
-- [x] Random generator, textbook example and Belady's demo
-
-**Shared:** agree the result contract, integrate, test, write the report and presentation.
-
-## 10. Limitations and future work
-- Limited to 100 requests and 10 frames to keep the visualization readable.
-- Possible extensions: LFU, Clock and Second-Chance algorithms, exporting results as CSV, saving test cases, a graph of faults versus frame count.
-
-## 11. Likely viva questions
-
-1. **What is a page fault?** The requested page is not in a physical frame, so it must be loaded from disk, evicting another page if memory is full.
-2. **Why is Optimal not used in real systems?** It requires knowing future page requests. It is used as a benchmark to judge other algorithms.
-3. **What is Belady's anomaly?** For some algorithms (such as FIFO) increasing the number of frames can increase page faults. LRU and Optimal are stack algorithms and do not show it.
-4. **Why does LRU usually beat FIFO?** Programs show locality of reference, so recently used pages are likely to be used again.
-5. **How is Optimal tie-breaking handled here?** If several pages are never used again, the one in the lowest-numbered frame is evicted, so results are repeatable.
-6. **How did you verify correctness?** Against textbook results (15 / 12 / 9 faults), hand-worked examples, and a property test that Optimal never loses.
