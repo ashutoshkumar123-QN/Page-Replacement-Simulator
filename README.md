@@ -96,6 +96,7 @@ Every algorithm returns this structure:
 - Comparison table, fault-ratio bar chart and a "best algorithm" banner.
 - Extras: random reference string generator, textbook example button, Belady's anomaly demo.
 - Responsive layout, keyboard-focusable controls, light and dark mode, and a reduced-motion mode (no bar animation or smooth scrolling when the system asks for less motion).
+- Screen-reader support: every step is announced through one polite live region (step number, page, hit or fault, and the reason).
 
 ## 5. Technology choices
 

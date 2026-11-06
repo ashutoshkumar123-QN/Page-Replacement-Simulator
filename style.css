@@ -239,6 +239,20 @@ table { border-collapse: collapse; width: 100%; }
 .site-footer { text-align: center; color: var(--muted); font-size: 0.85rem; padding: 18px 16px 30px; }
 code { background: var(--bg); padding: 1px 6px; border-radius: 4px; }
 
+/* ---------- Screen-reader-only text ---------- */
+/* Invisible on screen but still read out by screen readers (used for the step announcements). */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
 /* ---------- Reduced motion ---------- */
 /* Users who ask their system for less motion get no bar animation or smooth scrolling. */
 @media (prefers-reduced-motion: reduce) {

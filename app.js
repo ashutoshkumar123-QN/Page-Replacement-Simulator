@@ -62,12 +62,21 @@
     $('results').hidden = false;
     renderNote(note);
     renderAll();
+    announceSummary();
     $('results').scrollIntoView({ behavior: reduceMotion ? 'auto' : 'smooth', block: 'start' });
   }
 
   // ------------------------------------------------------------------
   // Rendering
   // ------------------------------------------------------------------
+  // Spoken summary after a new run or a tab switch (stepping is announced by goTo)
+  function announceSummary() {
+    var res = current();
+    $('simulation-announcement').textContent =
+      res.algorithm + ' ready. ' + res.totalRequests + ' requests, ' + res.totalHits + ' page hits, ' +
+      res.totalFaults + ' page faults, fault ratio ' + res.faultRatio + ' percent.';
+  }
+
   function renderAll() {
     renderTabs();
     renderStats();
@@ -91,6 +100,7 @@
         state.active = i;
         state.step = total();
         renderAll();
+        announceSummary();
       });
       tabs.appendChild(b);
     });
@@ -272,10 +282,27 @@
   // ------------------------------------------------------------------
   function goTo(step) {
     state.step = Math.max(0, Math.min(total(), step));
+
     renderStats();
     renderControls();
     renderExplanation();
     renderTrace();
+
+    // Screen readers: one complete, polite announcement per step
+    var announcement = $('simulation-announcement');
+
+    if (state.step === 0) {
+      announcement.textContent = 'Simulation reset. Step 0 of ' + total() + '.';
+      return;
+    }
+
+    var currentStep = current().steps[state.step - 1];
+
+    announcement.textContent =
+      'Step ' + state.step + ' of ' + total() +
+      '. Page ' + currentStep.page +
+      '. ' + currentStep.status +
+      '. ' + currentStep.explanation;
   }
 
   function stopPlayback() {

@@ -53,7 +53,7 @@
 
       <div id="tabs" class="tabs" role="tablist" aria-label="Algorithm" hidden></div>
 
-      <div id="stats" class="stats" aria-live="polite"></div>
+      <div id="stats" class="stats"></div>
 
       <div class="controls" role="group" aria-label="Simulation controls">
         <button type="button" id="btn-reset" class="btn" title="Back to the start">&#8634; Reset</button>
@@ -71,7 +71,8 @@
         <span id="step-counter" class="step-counter"></span>
       </div>
 
-      <p id="explanation" class="explanation" aria-live="polite"></p>
+      <p id="explanation" class="explanation"></p>
+      <p id="simulation-announcement" class="sr-only" aria-live="polite" aria-atomic="true"></p>
 
       <div id="trace-wrap" class="trace-wrap" tabindex="0" aria-label="Simulation table (scrollable)"></div>
 
